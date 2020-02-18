@@ -8,6 +8,11 @@ let userSchema = new mongoose.Schema({
     minlength: 1
   },
   lastname: String,
+  username: {
+    type: String,
+    required: true,
+    minLength: 1
+  },
   email: {
     type: String,
     required: true,
