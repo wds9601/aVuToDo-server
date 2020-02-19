@@ -47,6 +47,7 @@ router.post('/signup', (req, res) => {
     //Good - user does not already exist
     db.User.create(req.body)
     .then(newUser => {
+      console.log(newUser)
 
       // Cool - i have a user.  Now i need to make them a token
       let token = jwt.sign(newUser.toJSON(), process.env.JWT_SECRET, {
