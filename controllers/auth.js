@@ -48,6 +48,7 @@ router.post('/signup', (req, res) => {
     db.User.create(req.body)
     .then(newUser => {
       console.log(newUser)
+      // res.send(newUser.id)
 
       // Cool - i have a user.  Now i need to make them a token
       let token = jwt.sign(newUser.toJSON(), process.env.JWT_SECRET, {

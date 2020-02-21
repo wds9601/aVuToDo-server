@@ -4,7 +4,7 @@ let db = require('../models')
 // // JOURNAL POST ROUTES
 // GET - retreive all posts belonging to logged-in user
 router.get('/', (req, res) => {
-    db.Post.find({ author: req.user._id })
+    db.Post.find({author: req.user._id})
     .then((posts) => {
         if (!posts) {
             return res.status(404).send({ message: 'No posts' })
@@ -22,12 +22,13 @@ router.get('/', (req, res) => {
 // POST - create a new post as a user
 router.post('/', (req, res) => {
     db.Post.create({
-        author: req.body.author,
-        title: req.body.title,
-        content: req.body.content
+        author: req.body.body.author,
+        title: req.body.body.title,
+        content: req.body.body.content
     })
     .then(newPost => {
-        res.send({ newPost })
+        console.log('NEW POST', newPost)
+        // res.send({ newPost })
     })
     .catch(err => {
         console.log('Error in POST /posts route', err)
