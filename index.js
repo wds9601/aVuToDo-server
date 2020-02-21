@@ -28,6 +28,10 @@ app.use('/auth', expressJwt({
 
 app.use('/posts', expressJwt({
   secret: process.env.JWT_SECRET
+}).unless({  // w/o 'unless' function, the expressJWT would prevent public access to all routes in controller
+path: [
+  {url: '/posts', methods: ['POST'] }
+]
 }), require('./controllers/posts'))
 
 app.get('*', (req, res) => {

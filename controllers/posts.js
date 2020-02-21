@@ -14,18 +14,17 @@ router.get('/', (req, res) => {
         }
     })
     .catch(err => {
-        console.log('Error in GET all pets route', err)
-        res.status(503).send({ message: 'Error in finding pets' })
+        console.log('Error in GET all posts route', err)
+        res.status(503).send({ message: 'Error in finding posts' })
     })
 })
 
 // POST - create a new post as a user
 router.post('/', (req, res) => {
     db.Post.create({
-        author: req.user._id,
+        author: req.body.author,
         title: req.body.title,
-        content: req.body.content,
-        date: req.body.date
+        content: req.body.content
     })
     .then(newPost => {
         res.send({ newPost })
@@ -45,18 +44,18 @@ router.post('/', (req, res) => {
 
 
 // DELETE '/:id' - delete post from users list of posts
-router.delete('/:postId', (req, res) => {
-    db.Post.remove({
-        author: req.user._id,
-        _id: req.params.postId
+router.delete('/:id', (req, res) => {
+    console.log('Author and ID', req.user.id, req.params.id)
+    db.Post.deleteOne({
+        // author: req.user.id,
+        _id: req.params.id
     })
     .then(() => {
         console.log('Success in DELETE')
-        res.send({ message: 'Successful DELETE'})
-        res.status(200).send({ message: 'Success in DELETE'})
+        res.status(200).send({ message: 'Successful DELETE'})
     })
     .catch(err => {
-        console.log('Error when deleting a pet', err)
+        console.log('Error when deleting a post', err)
         res.status(500).send({ message: 'Server error'})
     })
 })

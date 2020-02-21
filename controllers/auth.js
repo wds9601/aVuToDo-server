@@ -51,8 +51,8 @@ router.post('/signup', (req, res) => {
 
       // Cool - i have a user.  Now i need to make them a token
       let token = jwt.sign(newUser.toJSON(), process.env.JWT_SECRET, {
-        expiresIn: 60 * 60 * 8 // shorter expiration for development // normally could be something like: 60 * 60 * 8 //e.g. 8 hours (in seconds)
-      }) // 3 arguments in 'sign' method: obejct we want to make token from, jwt secret, options
+        expiresIn: 60 * 60 * 8
+      })
 
       // Send the token
       res.send({ token })
@@ -66,6 +66,48 @@ router.post('/signup', (req, res) => {
     console.log('Error in POST /auth/signup')
     res.status(503).send({ message: 'Database or server error' })
   })
+})
+
+//POST to '/auth/verify' to verify user token and pass user data again
+router.post('/verify', (req,res) => {
+  //request must contain token
+  console.log('This is the req', req.body)
+  let token = req.body.token
+  if (!token) {
+      //if no token return an error
+      res.json({
+          type: 'error',
+          message: 'You must include a valid token'
+      })
+  }else {
+      //if there is a token verify it
+      jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+          //if any errors during verification return an error
+          if (err){
+              res.json({
+                  type: 'error',
+                  message: 'You must include a valid token'
+              })
+          } else {
+              //if token is valid use token to look up user in db
+              db.User.findById(user._id, (err, user) => {
+                  if (err) {
+                      res.json({
+                          type: 'error',
+                          message: 'Database error during validation'
+                      })
+                  } else {
+                      res.json({
+                          type: 'success',
+                          user: user,
+                          token
+                      })
+                      console.log(user)
+                  }
+              })
+          }
+      })
+  }
 })
 
 // NOTE: User should be logged in to access this route
